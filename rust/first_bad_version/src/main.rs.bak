@@ -1,0 +1,29 @@
+use std::cmp::Ordering;
+use std::iter::FromIterator;
+
+const BAD_VERSION: i32 = 1702766719;
+
+fn main() {
+	println!("{}", fbv(2126753390));
+}
+
+fn is_bad_version(v: i32) -> bool {
+	v >= BAD_VERSION
+}
+
+fn fbv(n: i32) -> i32 {
+	let range: Vec<i32> = Vec::from_iter(1i32..=n);
+	return range.as_slice().binary_search_by(|c| {
+		match is_bad_version(c.clone()) {
+			v if v && is_bad_version(c - 1) => {
+				Ordering::Greater
+			}
+			v if v && !is_bad_version(c - 1) => {
+				Ordering::Equal
+			}
+			_ => {
+				Ordering::Less
+			}
+		}
+	}).unwrap() as i32 + 1;
+}

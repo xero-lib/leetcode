@@ -1,19 +1,20 @@
+use std::cmp::Ordering::*;
+
 fn main() {
-    println!("{:?}", two_sum([2, 3, 4].into(), 6));
+    println!("{:?}", two_sum([-1, 0].into(), -1));
 }
 
 fn two_sum(numbers: Vec<i32>, target: i32) -> Vec<i32> {
-    // iterate over each element until current + smallest >= target
-    let mut idx = 0_usize;
-    while numbers[idx] - numbers[0] < target {
-        // binary search for largest number without exceeding target
-        let Ok(result_idx) = numbers.binary_search(&(target - numbers[idx])) else { 
-            idx += 1;
-            continue;
-        };
-        
-        return vec![(idx + 1) as i32, (result_idx + 1) as i32];
+    let mut l = 0;
+    let mut r = numbers.len() - 1;
+
+    while l <= r {
+        match (numbers[l] + numbers[r]).cmp(&target) {
+            Less => l += 1,
+            Greater => r -= 1,
+            Equal => return vec![(l+1) as i32, (r+1) as i32],
+        }
     }
 
-    vec![]
+    vec![-1, -1]
 }
